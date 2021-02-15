@@ -130,7 +130,7 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		end)
 	end
 
-	dragify(topBar)
+	dragify(background)
 	
 	local TabHandler = {}
 	
