@@ -566,6 +566,7 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				SliderTitle = SliderTitle or "Slider" .. _G.slidercount
 				MinValue = MinValue or 0
 				MaxValue = MaxValue or 100
+				callback = callback or function() end
 
 				local slider = Instance.new("Frame")
 				local sliderPadding = Instance.new("UIPadding")
