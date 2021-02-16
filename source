@@ -2,7 +2,7 @@ local Library = {}
 
 _G.windowcount = 0
 
-function Library:CreateWindow(UITitle,DragSpeed)
+function Library:CreateWindow(UITitle,UIGameTitle,DragSpeed)
 	_G.windowcount = _G.windowcount+1
 	--UI Counts
 	_G.TabCount = 0
@@ -12,8 +12,14 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	_G.togglecount = 0
 	_G.boxcount = 0
 	_G.dropdowncount = 0
-
 	_G.componentamount = 0
+
+	--marketplace info
+	local market = game:GetService("MarketplaceService")
+	local info = market:GetProductInfo(game.PlaceId, Enum.InfoType.Product)
+	
+	UIGameTitle = UIGameTitle or info.Name
+	UITitle = UITitle or "Wyvern UI Library : " .. UIGameTitle
 	
 	--Tween Service
 	local ts = game:GetService("TweenService")
@@ -59,9 +65,10 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	sideBar.Parent = background
 	sideBar.AnchorPoint = Vector2.new(0.5, 0.5)
 	sideBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-	sideBar.BorderSizePixel = 0
+	sideBar.BorderSizePixel = 1
 	sideBar.Position = UDim2.new(0.128999993, 0, 0.535000026, 0)
 	sideBar.Size = UDim2.new(0, 124, 0, 258)
+	rightBar.BorderColor3 = COlor3.fromRGB(60,60,60)
 
 	sideBarLayout.Name = "sideBarLayout"
 	sideBarLayout.Parent = sideBar
@@ -78,9 +85,10 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	rightBar.Name = "rightBar"
 	rightBar.Parent = background
 	rightBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-	rightBar.BorderSizePixel = 0
+	rightBar.BorderSizePixel = 1
 	rightBar.Position = UDim2.new(0.256999999, 0, 0.0839999989, 0)
 	rightBar.Size = UDim2.new(0, 376, 0, 258)
+	rightBar.BorderColor3 = COlor3.fromRGB(60,60,60)
 	
 	topBar.Name = "topBar"
 	topBar.Parent = background
@@ -94,7 +102,7 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	title.BackgroundTransparency = 1.000
 	title.Size = UDim2.new(0, 510, 0, 21)
 	title.Font = Enum.Font.Code
-	title.Text = UITitle
+	title.Text = UITitle .. " : " .. UIGameTitle
 	title.TextColor3 = Color3.fromRGB(225, 225, 225)
 	title.TextSize = 16.000
 
@@ -416,7 +424,7 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				callback()
 				
 				ts:Create(buttonButton,buttonInfo,{TextColor3 = Color3.fromRGB(255, 170, 0)}):Play()
-				wait(.235)
+				wait(.175)
 				ts:Create(buttonButton,buttonInfo,{TextColor3 = Color3.fromRGB(210, 210, 210)}):Play()
 			end)
 		end
@@ -509,7 +517,6 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				end
 			end)
 		end
-		print("UI library by loruph#1065")
 		function ComponentHandler:CreateBox(BoxTitle,DefaultText,BoxType,callback)
 			BoxType = BoxType or "Normal"
 			_G.boxcount = _G.boxcount +1
@@ -754,13 +761,84 @@ function Library:CreateWindow(UITitle,DragSpeed)
                     callback(piBox.Text)
 				end)
 			end
+			function ComponentHandler:CreateCutOff()
+				local cutoff = Instance.new("Frame")
+				local labelLayout = Instance.new("UIListLayout")
+				local cutoffframe = Instance.new("Frame")
+
+				cutoff.Name = "cutoff"
+				cutoff.Parent = TabFrame
+				cutoff.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+				cutoff.BackgroundTransparency = 1.000
+				cutoff.BorderSizePixel = 0
+				cutoff.Position = UDim2.new(0.00797872338, 0, 0.33073929, 0)
+				cutoff.Size = UDim2.new(0, 370, 0, 19)
+
+				labelLayout.Name = "labelLayout"
+				labelLayout.Parent = cutoff
+				labelLayout.FillDirection = Enum.FillDirection.Horizontal
+				labelLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+				labelLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				labelLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+				cutoffframe.Name = "cutoffframe"
+				cutoffframe.Parent = cutoff
+				cutoffframe.BackgroundColor3 = Color3.fromRGB(135, 135, 135)
+				cutoffframe.BorderSizePixel = 0
+				cutoffframe.Position = UDim2.new(0.083783783, 0, -0.210526317, 0)
+				cutoffframe.Size = UDim2.new(0, 308, 0, 1)
+			end
+			function ComponentHandler:CreateLabel(Txt)
+				local label = Instance.new("Frame")
+				local labelLayout = Instance.new("UIListLayout")
+				local labelDesign = Instance.new("Frame")
+				local labelText = Instance.new("TextLabel")
+				local UIListLayout = Instance.new("UIListLayout")
+				
+				label.Name = "label"
+				label.Parent = TabFrame
+				label.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+				label.BackgroundTransparency = 1.000
+				label.BorderSizePixel = 0
+				label.Position = UDim2.new(0.0107238609, 0, 0.078125, 0)
+				label.Size = UDim2.new(0, 370, 0, 27)
+				
+				labelLayout.Name = "labelLayout"
+				labelLayout.Parent = label
+				labelLayout.FillDirection = Enum.FillDirection.Horizontal
+				labelLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+				labelLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				labelLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+				
+				labelDesign.Name = "labelDesign"
+				labelDesign.Parent = label
+				labelDesign.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+				labelDesign.BorderSizePixel = 0
+				labelDesign.Position = UDim2.new(0, 0, 0.388888896, 0)
+				labelDesign.Size = UDim2.new(0, 336, 0, 1)
+				
+				labelText.Name = "labelText"
+				labelText.Parent = labelDesign
+				labelText.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+				labelText.BorderSizePixel = 0
+				labelText.Position = UDim2.new(0.284226179, 0, -11, 0)
+				labelText.Size = UDim2.new(0, 137, 0, 23)
+				labelText.Font = Enum.Font.Code
+				labelText.TextColor3 = Color3.fromRGB(200, 200, 200)
+				labelText.TextSize = 16.000
+				labelText.Text = txt
+				
+				UIListLayout.Parent = labelDesign
+				UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+				UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+			end
 		end
 
 		_G.componentamount = _G.buttoncount + _G.slidercount + _G.keybindcount + _G.boxcount + _G.togglecount + _G.dropdowncount
 
 		return ComponentHandler
-	end
-	
+	end	
 	return TabHandler
 end
 return Library
