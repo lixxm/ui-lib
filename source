@@ -1,3 +1,5 @@
+print("UI Library by loruph#1065")
+
 local Library = {}
 
 _G.windowcount = 0
@@ -22,6 +24,8 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	local shortboxInfo = TweenInfo.new(.1,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
 	local boxInfo = TweenInfo.new(.12,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
 	local longboxInfo = TweenInfo.new(.14,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
+	local sliderInfo1 = TweenInfo.new(.14,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
+	local sliderInfo2 = TweenInfo.new(.085,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
 
 	local uiLib = Instance.new("ScreenGui")
 	local background = Instance.new("Frame")
@@ -130,7 +134,7 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		end)
 	end
 
-	dragify(topBar)
+	dragify(background)
 	
 	local TabHandler = {}
 	
@@ -197,7 +201,7 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		
 		local ComponentHandler = {}
 		
-					function ComponentHandler:CreateSlider(SliderTitle,MinValue,MaxValue,callback)
+			function ComponentHandler:CreateSlider(SliderTitle,MinValue,MaxValue,callback)
 				_G.slidercount = _G.slidercount+1
 				SliderTitle = SliderTitle or "Slider" .. _G.slidercount
 				MinValue = MinValue or 0
@@ -207,33 +211,13 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				local slider = Instance.new("Frame")
 				local sliderPadding = Instance.new("UIPadding")
 				local sliderTitle = Instance.new("TextLabel")
-				local sliderValue = Instance.new("TextBox")
-				local sliderLayout2 = Instance.new("UIListLayout")
-				local sliderCutOff = Instance.new("Frame")
 				local sliderBG = Instance.new("TextButton")
 				local sliderlayout2 = Instance.new("UIListLayout")
-				local sliderBG_2 = Instance.new("TextButton")
+				local sliderFill = Instance.new("Frame")
 				local sliderActualValue = Instance.new("TextLabel")
-				local UserInputService = game:GetService("UserInputService")
-				local RunService = game:GetService("RunService")
-				local Mouse = game:GetService("UserInputService"):GetMouseLocation()
-				local Connection;
-	
-				UserInputService.InputEnded:Connect(function(Input)
-					if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-						if Connection then
-							Connection:Disconnect()
-							Connection = nil
-						end
-					end
-				end)
-	
-				local Vals = {
-					["Min"] = MinValue;
-					["Max"] = MaxValue;
-				}
-
-				local seperatevalue=0
+				local mouse = game.Players.LocalPlayer:GetMouse()
+				local uis = game:GetService("UserInputService")
+				local Value;
 	
 				slider.Name = "slider"
 				slider.Parent = TabFrame
@@ -261,62 +245,28 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				sliderTitle.TextSize = 15.000
 				sliderTitle.TextXAlignment = Enum.TextXAlignment.Left
 	
-				sliderValue.Name = "sliderValue"
-				sliderValue.Parent = slider
-				sliderValue.BackgroundColor3 = Color3.fromRGB(37, 37, 37)
-				sliderValue.BorderColor3 = Color3.fromRGB(37, 37, 37)
-				sliderValue.BorderSizePixel = 0
-				sliderValue.Position = UDim2.new(0.840540528, 0, 0.0185185187, 0)
-				sliderValue.Size = UDim2.new(0, 55, 0, 20)
-				sliderValue.ClearTextOnFocus = false
-				sliderValue.Font = Enum.Font.SourceSans
-				sliderValue.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)
-				sliderValue.PlaceholderText = MinValue
-				sliderValue.Text = ""
-				sliderValue.TextColor3 = Color3.fromRGB(222, 222, 222)
-				sliderValue.TextSize = 14.000
-	
-				sliderLayout2.Name = "sliderLayout2"
-				sliderLayout2.Parent = sliderValue
-				sliderLayout2.HorizontalAlignment = Enum.HorizontalAlignment.Center
-				sliderLayout2.SortOrder = Enum.SortOrder.LayoutOrder
-				sliderLayout2.VerticalAlignment = Enum.VerticalAlignment.Bottom
-	
-				sliderCutOff.Name = "sliderCutOff"
-				sliderCutOff.Parent = sliderValue
-				sliderCutOff.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
-				sliderCutOff.BorderSizePixel = 0
-				sliderCutOff.Position = UDim2.new(0.254385978, 0, 0.949999988, 0)
-				sliderCutOff.Size = UDim2.new(0, 0, 0, 1)
-	
 				sliderlayout2.Name = "sliderlayout2"
 				sliderlayout2.Parent = sliderBG
 				sliderlayout2.SortOrder = Enum.SortOrder.LayoutOrder
 				sliderlayout2.VerticalAlignment = Enum.VerticalAlignment.Center
 	
-				sliderBG_2.Name = "sliderBG"
-				sliderBG_2.Parent = sliderBG
-				sliderBG_2.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-				sliderBG_2.BorderSizePixel = 0
-				sliderBG_2.Position = UDim2.new(-0.0079874387, 0, 0.0823114589, 0)
-				sliderBG_2.Size = UDim2.new(0, 0, 0, 10)
-				sliderBG_2.AutoButtonColor = false
-				sliderBG_2.Font = Enum.Font.SourceSans
-				sliderBG_2.Text = ""
-				sliderBG_2.TextColor3 = Color3.fromRGB(0, 0, 0)
-				sliderBG_2.TextSize = 14.000
-				sliderBG_2.Active = false
+				sliderFill.Name = "sliderFill"
+				sliderFill.Parent = sliderBG
+				sliderFill.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+				sliderFill.BorderSizePixel = 0
+				sliderFill.Size = UDim2.new(0, 0, 0, 10)
 	
 				sliderActualValue.Name = "sliderActualValue"
 				sliderActualValue.Parent = slider
 				sliderActualValue.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				sliderActualValue.BackgroundTransparency = 1.000
-				sliderActualValue.Position = UDim2.new(0.0100722034, 0, 0.354911655, 0)
-				sliderActualValue.Size = UDim2.new(0, 355, 0, 10)
+				sliderActualValue.Position = UDim2.new(0.677, 0,0.033, 0)
+				sliderActualValue.Size = UDim2.new(0, 111,0, 20)
 				sliderActualValue.Font = Enum.Font.Code
 				sliderActualValue.Text = MinValue .. "/" .. MaxValue
 				sliderActualValue.TextColor3 = Color3.fromRGB(222, 222, 222)
 				sliderActualValue.TextSize = 14.000
+				sliderActualValue.TextXAlignment = Enum.TextXAlignment.Right
 				
 				sliderBG.Name = "sliderBG"
 				sliderBG.Parent = slider
@@ -332,34 +282,33 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				sliderBG.TextSize = 14.000
 				sliderBG.Active = true
 				sliderBG.MouseButton1Down:Connect(function()
-					if Connection then
-						Connection:Disconnect()
-					end
-					Connection = RunService.RenderStepped:Connect(function()
-						local Mouse = game:GetService("UserInputService"):GetMouseLocation()
-						local Percentage = math.clamp((Mouse.X - sliderBG.AbsolutePosition.X)/(sliderBG.AbsoluteSize.X),0,1)
-						local GetValue = Vals.Min + (Vals.Max - Vals.Min) * Percentage
-							
-						GetValue = math.floor(GetValue)
-						seperatevalue=tostring(GetValue)
-							
-						sliderBG_2:TweenSize(UDim2.new(Percentage,0,0,10),"InOut","Linear",.026,true)
-						sliderActualValue.Text = seperatevalue.."/"..Vals.Max
-						sliderValue.PlaceHolderText = seperatevalue.."/"..Vals.Max
-						callback(seperatevalue)
+					ts:Create(sliderFill,sliderInfo1,{BackgroundColor3 = Color3.fromRGB(255, 170, 0)}):Play()
+					Value = math.floor((((tonumber(MaxValue) - tonumber(MinValue)) / 355) * sliderFill.AbsoluteSize.X) + tonumber(MinValue)) or 0
+					pcall(function()
+						callback(Value)
+					end)
+					ts:Create(sliderFill,sliderInfo2,{Size = UDim2.new(0, math.clamp(mouse.X - sliderFill.AbsolutePosition.X, 0, 355), 0, 10)}):Play()
+					moveconnection = mouse.Move:Connect(function()
+						sliderActualValue.Text = Value.."/"..MaxValue
+						Value = math.floor((((tonumber(MaxValue) - tonumber(MinValue)) / 355) * sliderFill.AbsoluteSize.X) + tonumber(MinValue))
+						pcall(function()
+							callback(Value)
+						end)
+						sliderFill.Size = UDim2.new(0,math.clamp(mouse.X - sliderFill.AbsolutePosition.X,0,355),0,10)
+					end)
+					releaseconnection = uis.InputEnded:Connect(function(Mouse)
+						if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
+							Value = math.floor((((tonumber(MaxValue) - tonumber(MinValue)) / 355) * sliderFill.AbsoluteSize.X) + tonumber(MinValue))
+							pcall(function()
+								callback(Value)
+							end)
+							ts:Create(sliderFill,sliderInfo2,{Size = UDim2.new(0, math.clamp(mouse.X - sliderFill.AbsolutePosition.X, 0, 355), 0, 10)}):Play()
+							moveconnection:Disconnect()
+							releaseconnection:Disconnect()
+							ts:Create(sliderFill,sliderInfo1,{BackgroundColor3 = Color3.fromRGB(70,70,70)}):Play()
+						end
 					end)
 				end)	
-				
-				sliderValue.Focused:Connect(function()
-					ts:Create(sliderCutOff,shortboxInfo,{Size = UDim2.new(0, 57, 0, 1)}):Play()
-				end)
-				sliderValue.FocusLost:Connect(function()
-					ts:Create(sliderCutOff,shortboxInfo,{Size = UDim2.new(0, 0, 0, 1)}):Play()
-					seperatevalue = sliderValue.Text
-					if sliderValue.Text ~= seperatevalue then
-						sliderValue.Text = ""
-					end
-				end)
 			end
 		
 		function ComponentHandler:CreateButton(btitle,callback)
@@ -732,5 +681,4 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	
 	return TabHandler
 end
-
 return Library
