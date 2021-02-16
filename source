@@ -1,5 +1,3 @@
-print("UI Library by loruph#1065")
-
 local Library = {}
 
 _G.windowcount = 0
@@ -13,6 +11,9 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	_G.keybindcount = 0
 	_G.togglecount = 0
 	_G.boxcount = 0
+	_G.dropdowncount = 0
+
+	_G.componentamount = 0
 	
 	--Tween Service
 	local ts = game:GetService("TweenService")
@@ -24,8 +25,10 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	local shortboxInfo = TweenInfo.new(.1,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
 	local boxInfo = TweenInfo.new(.12,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
 	local longboxInfo = TweenInfo.new(.14,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
-	local sliderInfo1 = TweenInfo.new(.14,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
-	local sliderInfo2 = TweenInfo.new(.085,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
+	local sliderInfo1 = TweenInfo.new(.085,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
+	local sliderInfo2 = TweenInfo.new(.14,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
+	local closeInfo1 = TweenInfo.new(.07,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
+	local closeInfo2 = TweenInfo.new(.095,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut,0,false,0)
 
 	local uiLib = Instance.new("ScreenGui")
 	local background = Instance.new("Frame")
@@ -36,6 +39,10 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	local topBar = Instance.new("Frame")
 	local title = Instance.new("TextLabel")
 	local underBar = Instance.new("Frame")
+	local closeButton = Instance.new("TextButton")
+	local tweenframe = Instance.new("Frame")
+	local tweentext = Instance.new("TextLabel")
+	local tweenlayout = Instance.new("UIListLayout")
 	
 	uiLib.Name = "uiLib"
 	uiLib.Parent = game.CoreGui
@@ -97,6 +104,54 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	underBar.BorderSizePixel = 0
 	underBar.Position = UDim2.new(0, 0, 0.952380955, 0)
 	underBar.Size = UDim2.new(0, 511, 0, 1)
+
+	closeButton.Name = "closeButton"
+	closeButton.Parent = background
+	closeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	closeButton.BackgroundTransparency = 1.000
+	closeButton.Position = UDim2.new(0.953033209, 0, 0, 0)
+	closeButton.Size = UDim2.new(0, 20, 0, 20)
+	closeButton.Font = Enum.Font.Code
+	closeButton.Text = "╳"
+	closeButton.TextColor3 = Color3.fromRGB(235, 235, 235)
+	closeButton.TextSize = 14.000
+	closeButton.MouseButton1Click:Connect(function()
+		uiLib:Destroy()
+	end)
+
+	tweenframe.Name = "tweenframe"
+	tweenframe.Parent = closeButton
+	tweenframe.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	tweenframe.BackgroundTransparency = 0.150
+	tweenframe.BorderSizePixel = 0
+	tweenframe.ClipsDescendants = true
+	tweenframe.Position = UDim2.new(1.54999995, 0, 0, 0)
+	tweenframe.Size = UDim2.new(0, 0, 0, 20)
+
+	tweentext.Name = "tweentext"
+	tweentext.Parent = tweenframe
+	tweentext.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	tweentext.BackgroundTransparency = 1.000
+	tweentext.Size = UDim2.new(0, 73, 0, 20)
+	tweentext.Font = Enum.Font.Gotham
+	tweentext.Text = "Destroy()"
+	tweentext.TextColor3 = Color3.fromRGB(255, 35, 46)
+	tweentext.TextSize = 12.000
+
+	tweenlayout.Name = "tweenlayout"
+	tweenlayout.Parent = tweenframe
+	tweenlayout.SortOrder = Enum.SortOrder.LayoutOrder
+	tweenlayout.VerticalAlignment = Enum.VerticalAlignment.Center
+
+	closeButton.MouseEnter:Connect(function()
+		ts:Create(tweenframe,closeInfo1,{Size = UDim2.new(0,73,0,20)}):Play()
+		ts:Create(closeButton,closeInfo2,{TextColor3 = Color3.fromRGB(255, 170, 0)}):Play()
+	end)
+	closeButton.MouseLeave:Connect(function()
+		ts:Create(tweenframe,closeInfo1,{Size = UDim2.new(0,0,0,20)}):Play()
+		ts:Create(closeButton,closeInfo2,{TextColor3 = Color3.fromRGB(235, 235, 235)}):Play()
+	end)
+
 	local timee = DragSpeed
 
 	local UIS = game:GetService("UserInputService")
@@ -140,11 +195,12 @@ function Library:CreateWindow(UITitle,DragSpeed)
 	
 	function TabHandler:CreateTab(TabName)
 		_G.TabCount = _G.TabCount +1
+
 		TabName = TabName or "Tab" .. _G.TabCount
 		local tabButtonButton = Instance.new("TextButton")
 		local TabFrame = Instance.new("ScrollingFrame")
 		local elementPadding = Instance.new("UIPadding")
-		local elementLayout = Instance.new("UIListLayout")
+		local elementLayout = Instance.new("UIListLayout")	
 
 		TabFrame.Name = "TabFrame"
 		TabFrame.Parent = rightBar
@@ -153,8 +209,10 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		TabFrame.BackgroundTransparency = 1.000
 		TabFrame.BorderSizePixel = 0
 		TabFrame.Size = UDim2.new(0, 376, 0, 257)
-		TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+		TabFrame.CanvasPosition = Vector2.new(0, 0)
+		TabFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
 		TabFrame.ScrollBarThickness = 0
+		TabFrame.ScrollBarImageColor3 = Color3.fromRGB(255,170,0)
 		TabFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 		TabFrame.Visible = false
 		
@@ -203,6 +261,11 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		
 			function ComponentHandler:CreateSlider(SliderTitle,MinValue,MaxValue,callback)
 				_G.slidercount = _G.slidercount+1
+
+				if _G.componentamount <= 6 then
+					TabFrame.CanvasSize = UDim2.new(0,0,TabFrame.CanvasSize.Y.Scale+0.07315,0)
+				end
+
 				SliderTitle = SliderTitle or "Slider" .. _G.slidercount
 				MinValue = MinValue or 0
 				MaxValue = MaxValue or 100
@@ -313,6 +376,11 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		
 		function ComponentHandler:CreateButton(btitle,callback)
 			_G.buttoncount = _G.buttoncount +1
+
+			if _G.componentamount <= 6 then
+				TabFrame.CanvasSize = UDim2.new(0,0,TabFrame.CanvasSize.Y.Scale+0.0375,0)
+			end
+
 			title = title or "Button" .. _G.buttoncount
 			
 			local button = Instance.new("Frame")
@@ -355,6 +423,11 @@ function Library:CreateWindow(UITitle,DragSpeed)
 		local togen = false;
 		function ComponentHandler:CreateToggle(ttile,speed,callback)
 			_G.togglecount = _G.togglecount+1
+
+			if _G.componentamount <= 6 then
+				TabFrame.CanvasSize = UDim2.new(0,0,TabFrame.CanvasSize.Y.Scale+0.0375,0)
+			end
+
 			ttile = ttile or "Toggle" .. _G.togglecount
 			speed = speed or 0.1775
 
@@ -436,9 +509,15 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				end
 			end)
 		end
+		print("UI library by loruph#1065")
 		function ComponentHandler:CreateBox(BoxTitle,DefaultText,BoxType,callback)
 			BoxType = BoxType or "Normal"
 			_G.boxcount = _G.boxcount +1
+
+			if _G.componentamount <= 6 then
+				TabFrame.CanvasSize = UDim2.new(0,0,TabFrame.CanvasSize.Y.Scale+0.0375,0)
+			end
+
 			BoxTitle = BoxTitle or BoxType .. " Box" .. _G.boxcount
 			DefaultText = DefaultText or "0"
 			
@@ -676,6 +755,9 @@ function Library:CreateWindow(UITitle,DragSpeed)
 				end)
 			end
 		end
+
+		_G.componentamount = _G.buttoncount + _G.slidercount + _G.keybindcount + _G.boxcount + _G.togglecount + _G.dropdowncount
+
 		return ComponentHandler
 	end
 	
